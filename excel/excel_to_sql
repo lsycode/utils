@@ -61,8 +61,8 @@ def to_sql(list, table_name):
 def main():
     tables = excel_table_byname()
 
-    # for row in tables:
-    #     print(row)
+    for row in tables:
+        print(row)
     to_sql(tables, 'cfg_avatar')
 
 
