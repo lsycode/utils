@@ -1,1 +1,70 @@
-sfsdfsdf
+# 参考代码：http://www.cnblogs.com/lhj588/archive/2012/01/06/2314181.html
+# version: python3.4
+# !/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# 导入MySQL驱动,xlrd:
+import mysql.connector
+import datetime
+import xdrlib, sys
+import xlrd
+
+f = r'C:\Users\andy\Desktop\衣饰表.xls'
+
+
+def open_excel(file=f):
+    try:
+        data = xlrd.open_workbook(file)
+        return data
+    except Exception as e:
+        print(str(e))
+
+
+# 根据名称获取Excel表格中的数据   参数:file：Excel文件路径     colnameindex：表头列名所在行的索引  ，by_name：sheet1表名
+def excel_table_byname(file=f, colnameindex=0, by_name='sheet1'):
+    data = open_excel(file)
+    table = data.sheet_by_name(by_name)
+    nrows = table.nrows  # 行数
+    colnames = table.row_values(colnameindex)  # 某一行数据
+    list = []
+    for rownum in range(1, nrows):
+        row = table.row_values(rownum)
+        if row:
+            app = {}
+            for i in range(len(colnames)):
+                s = row[i]
+                if isinstance(s, float):
+                    s = int(s)
+                else:
+                    s = "'" + s + "'"
+                app[colnames[i]] = s
+            list.append(app)
+    return list
+
+
+def to_sql(list, table_name):
+    with open(r'C:\Users\andy\Desktop\test.sql', 'w', encoding='utf-8') as f:
+        for dict in list:
+            s = " INSERT INTO  " + table_name
+            keys = ""
+            values = ""
+            for index, (k, v) in enumerate(dict.items()):
+                keys += str(k)
+                values += str(v)
+                if (index < len(dict) - 1):
+                    keys = keys + ','
+                    values = values + ','
+            s = s + "(" + keys + ") VALUES (" + values + ");\n"
+            f.write(s)
+
+
+def main():
+    tables = excel_table_byname()
+
+    # for row in tables:
+    #     print(row)
+    to_sql(tables, 'cfg_avatar')
+
+
+if __name__ == "__main__":
+    main()
