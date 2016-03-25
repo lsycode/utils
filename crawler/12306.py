@@ -11,11 +11,8 @@ import webbrowser
 url = "https://kyfw.12306.cn/otn/leftTicket/query?leftTicketDTO.train_date=2016-04-04&leftTicketDTO.from_station=JYK&leftTicketDTO.to_station=BJP&purpose_codes=ADULT"
 
 format = "%H:%M"
-data = "2016-04-08"
 start_time1 = "16:00"
 start_time2 = "22:00"
-# start_time1 = data + " " + start_time1
-# start_time2 = data + " " + start_time2
 start_time1 = time.strptime(start_time1, format)
 start_time2 = time.strptime(start_time2, format)
 res = urllib.request.urlopen(url)
